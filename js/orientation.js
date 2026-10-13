@@ -85,14 +85,17 @@ export class OrientationTracker {
       this.compassAccuracy = e.webkitCompassAccuracy;
       const R = rotationMatrix(e.alpha, e.beta, e.gamma);
       const back = col(R, 2).map((x) => -x), top = col(R, 1);
-      // iOS reports the heading of the back camera when upright and of the top edge when flat.
-      // Near the zenith (camera pointing up) and in the in-between zone that heading is ill-defined
-      // and jumps around, which made the view spin. There we keep the last good offset and let the
-      // gyroscope (alpha) carry the motion; the offset is only learned in the two clear poses.
-      const upright = Math.abs(back[2]) < 0.6;          // camera within ~37° of the horizon
-      const flatUp = back[2] < -0.9;                    // screen up, camera pointing down
-      if (upright || flatUp || this.compassOffset == null) {
-        const h = headingOf(flatUp ? top : back);
+      // iOS reports a heading for whichever device axis is level: the top edge (portrait top) when that
+      // edge is horizontal (lying flat, or held sideways in landscape), and the back camera when the
+      // phone is held upright in portrait. Learn the offset only in those clear poses; when the camera
+      // points high toward the zenith, or in between, keep the last good offset and let the gyroscope
+      // carry the motion (the heading there is ill-defined and made the view spin or jump).
+      const camHigh = back[2] > 0.6;
+      let ref = null;
+      if (!camHigh && Math.abs(top[2]) < 0.5) ref = top;          // flat, or landscape upright
+      else if (!camHigh && Math.abs(back[2]) < 0.6 && Math.abs(top[2]) > 0.8) ref = back; // portrait upright
+      if (ref || this.compassOffset == null) {
+        const h = headingOf(ref || back);
         const d = e.webkitCompassHeading - h;
         // circular low-pass of the offset (handles 0/360)
         const s = Math.sin(d * DEG), c = Math.cos(d * DEG);
