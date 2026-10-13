@@ -1,0 +1,7 @@
+{
+  "_name": "한국어",
+  "_note": "Only object names are translated so far; other text falls back to English.",
+  "planet.sun": "태양", "planet.moon": "달", "planet.mercury": "수성", "planet.venus": "금성", "planet.mars": "화성",
+  "planet.jupiter": "목성", "planet.saturn": "토성", "planet.uranus": "천왕성", "planet.neptune": "해왕성",
+  "cardinal": ["북", "북동", "동", "남동", "남", "남서", "서", "북서"]
+}

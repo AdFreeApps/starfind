@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="theme-color" content="#000000">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Starfind">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'">
+<title>Starfind</title>
+<meta name="description" content="Starfind（スターファインド）は、スマホを空にかざすだけで星や星座の名前が分かる、無料・広告なしの星座アプリです。インストール不要でiPhoneのブラウザでも動きます。はくちょう座やデネブ、夏の大三角、北極星、惑星や月の探し方を矢印で案内します。夜空に、星の呼び声を探しに。">
+<meta name="keywords" content="星座アプリ,星座 アプリ 無料,広告なし,星空,星の名前,空にかざす,iPhone,ブラウザ,はくちょう座,デネブ,アルビレオ,夏の大三角,北極星,惑星,星座早見,sky map,star finder,stargazing">
+<meta property="og:title" content="Starfind ― 空にかざして星を探す">
+<meta property="og:description" content="スマホを空にかざすだけで、星や星座、惑星の名前が分かる。無料・広告なしの星座アプリ。">
+<meta property="og:type" content="website">
+<meta property="og:image" content="icon-512.png">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Starfind","applicationCategory":"EducationalApplication","operatingSystem":"iOS, Android, Windows, macOS","offers":{"@type":"Offer","price":"0","priceCurrency":"JPY"},"description":"スマホを空にかざして星や星座を探す、無料・広告なしの星座アプリ","inLanguage":["ja","en"]}</script>
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="stylesheet" href="style.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "デネブは何光年先にあるの？", "acceptedAnswer": {"@type": "Answer", "text": "はくちょう座の尾にあたる1等星デネブは、遠すぎて距離が正確に測りにくい星です。推定には幅があり、およそ1,400〜2,600光年とされています。それでも肉眼ではっきり見えるのは、太陽の何万倍も明るく輝いているからです。"}}, {"@type": "Question", "name": "アルビレオはなぜ金と青に見えるの？", "acceptedAnswer": {"@type": "Answer", "text": "はくちょう座のくちばしにあたるアルビレオは、望遠鏡で見ると金色と青の二つの星に分かれる二重星で、「天上の宝石」とも呼ばれます。金色の星は表面温度が低いオレンジ色の巨星、青い星は高温の星です。並んでいるので色の違いが際立ちます。肉眼では一つの星に見えます。距離はおよそ430光年です。"}}, {"@type": "Question", "name": "昔はデネブが北極星だったって本当？", "acceptedAnswer": {"@type": "Answer", "text": "地球の自転軸は、コマの首振りのように約2万6千年かけてゆっくり向きを変えます（歳差運動）。そのため「北極星」になる星は時代ごとに入れ替わります。今はポラリス、約5千年前はりゅう座のトゥバン、約1万2千〜1万4千年前はベガの近くでした。デネブの近くを天の北極が通ったのは一万数千年以上前で、はくちょう座が星空の中央にあった時代です。西暦1万年ごろにも、再びデネブの近くを通ります。"}}, {"@type": "Question", "name": "はくちょう座の方角から「暗黒物質の風」が吹いているって本当？", "acceptedAnswer": {"@type": "Answer", "text": "太陽系は天の川銀河の中を、はくちょう座の方向へ秒速約230kmで動いています。銀河を満たしていると考えられている暗黒物質から見ると、地球には、はくちょう座の方角から向かい風が吹いていることになります。この「暗黒物質の風」の向きをとらえようとする実験が、世界で進められています（まだ検出はされていません）。"}}, {"@type": "Question", "name": "夏の大三角はどうやって探すの？", "acceptedAnswer": {"@type": "Answer", "text": "夏から秋の宵、空の高い所に、こと座のベガ、わし座のアルタイル、はくちょう座のデネブの三つの1等星で大きな三角形ができます。いちばん明るいのがベガ、天の川をはさんで向かいがアルタイル、天の川の中にあるのがデネブです。ベガとアルタイルは七夕の織姫と彦星です。"}}]}</script>
+</head>
+<body>
+<noscript><h1>Starfind ― 空にかざして星を探す</h1><p>スマホを空にかざすだけで、星や星座、惑星の名前が分かる無料・広告なしの星座アプリです。はくちょう座、デネブ、夏の大三角、北極星などの探し方を案内します。JavaScriptを有効にしてお使いください。</p><h2>デネブは何光年先にあるの？</h2><p>はくちょう座の尾にあたる1等星デネブは、遠すぎて距離が正確に測りにくい星です。推定には幅があり、およそ1,400〜2,600光年とされています。それでも肉眼ではっきり見えるのは、太陽の何万倍も明るく輝いているからです。</p><h2>アルビレオはなぜ金と青に見えるの？</h2><p>はくちょう座のくちばしにあたるアルビレオは、望遠鏡で見ると金色と青の二つの星に分かれる二重星で、「天上の宝石」とも呼ばれます。金色の星は表面温度が低いオレンジ色の巨星、青い星は高温の星です。並んでいるので色の違いが際立ちます。肉眼では一つの星に見えます。距離はおよそ430光年です。</p><h2>昔はデネブが北極星だったって本当？</h2><p>地球の自転軸は、コマの首振りのように約2万6千年かけてゆっくり向きを変えます（歳差運動）。そのため「北極星」になる星は時代ごとに入れ替わります。今はポラリス、約5千年前はりゅう座のトゥバン、約1万2千〜1万4千年前はベガの近くでした。デネブの近くを天の北極が通ったのは一万数千年以上前で、はくちょう座が星空の中央にあった時代です。西暦1万年ごろにも、再びデネブの近くを通ります。</p><h2>はくちょう座の方角から「暗黒物質の風」が吹いているって本当？</h2><p>太陽系は天の川銀河の中を、はくちょう座の方向へ秒速約230kmで動いています。銀河を満たしていると考えられている暗黒物質から見ると、地球には、はくちょう座の方角から向かい風が吹いていることになります。この「暗黒物質の風」の向きをとらえようとする実験が、世界で進められています（まだ検出はされていません）。</p><h2>夏の大三角はどうやって探すの？</h2><p>夏から秋の宵、空の高い所に、こと座のベガ、わし座のアルタイル、はくちょう座のデネブの三つの1等星で大きな三角形ができます。いちばん明るいのがベガ、天の川をはさんで向かいがアルタイル、天の川の中にあるのがデネブです。ベガとアルタイルは七夕の織姫と彦星です。</p></noscript>
+<canvas id="skygl" aria-hidden="true"></canvas>
+<canvas id="sky" aria-label="星空" role="img"></canvas>
+<div id="dim" hidden></div>
+
+<header class="topbar">
+  <button id="menuBtn" class="icon" data-i18n-attr="aria-label:menu;title:menu">
+    <svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+  </button>
+  <div id="clockWrap" class="clockwrap">
+    <div id="clock">—</div>
+    <div id="locLabel" class="loc"></div>
+    <button id="resetTime" class="reset" hidden data-i18n="resetTime"></button>
+  </div>
+  <button id="searchBtn" class="icon" data-i18n-attr="aria-label:search;title:search">
+    <svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6"/><path d="M15 15l5 5"/></svg>
+  </button>
+</header>
+
+<div id="sunWarn" class="sunwarn" role="alert" hidden><span data-i18n="sunWarn"></span></div>
+
+<div id="guide" class="guide" hidden>
+  <span id="guideText"></span>
+  <button id="guideClose" data-i18n-attr="aria-label:guideStop;title:guideStop">×</button>
+</div>
+
+<div class="zoom">
+  <button id="zoomIn" data-i18n-attr="aria-label:zoomIn;title:zoomIn">＋</button>
+  <button id="zoomOut" data-i18n-attr="aria-label:zoomOut;title:zoomOut">－</button>
+</div>
+
+<nav class="bottombar">
+  <button id="modeBtn" class="tab">
+    <svg viewBox="0 0 24 24"><rect x="7" y="2.5" width="10" height="19" rx="2"/><path d="M11 18.5h2"/></svg>
+    <span id="modeLabel"></span>
+  </button>
+  <button id="timeBtn" class="tab">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7v5l3.5 2"/></svg>
+    <span data-i18n="tab.time"></span>
+  </button>
+  <button id="nightBtn" class="tab">
+    <svg viewBox="0 0 24 24"><path d="M19 14.5A7.5 7.5 0 0 1 9.5 5a7.5 7.5 0 1 0 9.5 9.5z"/></svg>
+    <span data-i18n="tab.night"></span>
+  </button>
+</nav>
+
+<div id="toast" class="toast" hidden></div>
+<div id="searchHint" class="hintbubble" hidden><span data-i18n="hint.search"></span><button id="searchHintClose" data-i18n-attr="aria-label:close">×</button></div>
+<div id="tooltip" class="tooltip" hidden></div>
+
+<section id="card" class="card" hidden>
+  <button id="cardClose" class="close" data-i18n-attr="aria-label:close">×</button>
+  <h2 id="cardTitle"></h2>
+  <div id="cardSub" class="sub"></div>
+  <dl id="cardRows"></dl>
+  <p id="cardNote" class="note" hidden></p>
+  <button id="cardGuide" class="primary" data-i18n="card.guide"></button>
+</section>
+
+<section id="menu" class="panel left" hidden>
+  <div class="panelhead"><h2 data-i18n="menu.title"></h2><button class="close" data-close data-i18n-attr="aria-label:close">×</button></div>
+  <div id="layerList" class="list"></div>
+  <h3 data-i18n="menu.look"></h3>
+  <div class="list">
+    <label class="switch"><span data-i18n="opt.night"></span><input id="optNight" type="checkbox"><i></i></label>
+    <label class="switch"><span data-i18n="opt.dim"></span><input id="optDim" type="checkbox"><i></i></label>
+    <label class="switch"><span data-i18n="opt.twinkle"></span><input id="optTwinkle" type="checkbox"><i></i></label>
+  </div>
+  <h3 data-i18n="menu.lang"></h3>
+  <div class="form"><select id="langSelect"></select></div>
+  <h3 data-i18n="menu.place"></h3>
+  <div class="form">
+    <div class="row2">
+      <label><span data-i18n="lat"></span> <input id="latInput" type="number" step="0.01" inputmode="decimal"></label>
+      <label><span data-i18n="lon"></span> <input id="lonInput" type="number" step="0.01" inputmode="decimal"></label>
+    </div>
+    <div class="row"><button id="locBtn" data-i18n="locBtn"></button><button id="locDefault" data-i18n="locDefault"></button></div>
+  </div>
+  <h3 data-i18n="menu.compass"></h3>
+  <div class="form">
+    <label><span data-i18n="decl"></span> <input id="declInput" type="number" step="0.1" inputmode="decimal"></label>
+    <label><span data-i18n="offset"></span> <span id="offsetVal"></span><input id="offsetInput" type="range" min="-30" max="30" step="1"></label>
+    <p class="hint" data-i18n="compassHint"></p>
+  </div>
+  <button id="helpBtn" class="linkbtn" data-i18n="helpBtn"></button>
+</section>
+
+<section id="search" class="panel full" hidden>
+  <div class="panelhead">
+    <input id="searchInput" type="search" autocomplete="off" enterkeyhint="search" data-i18n-attr="placeholder:search.placeholder;aria-label:search">
+    <button class="close" data-close data-i18n-attr="aria-label:close">×</button>
+  </div>
+  <h3 id="recTitle" class="rectitle" hidden></h3>
+  <ul id="searchResults" class="results"></ul>
+</section>
+
+<section id="timepanel" class="panel bottom" hidden>
+  <div class="panelhead"><h2 data-i18n="time.title"></h2><button class="close" data-close data-i18n-attr="aria-label:close">×</button></div>
+  <input id="timeInput" type="datetime-local">
+  <div class="grid4">
+    <button id="nowBtn" data-i18n="time.now"></button>
+    <button id="tonightBtn" data-i18n="time.tonight"></button>
+    <button data-step="-24" data-i18n="time.m1d"></button>
+    <button data-step="24" data-i18n="time.p1d"></button>
+    <button data-step="-1" data-i18n="time.m1h"></button>
+    <button data-step="1" data-i18n="time.p1h"></button>
+    <button id="playBtn"></button>
+    <button id="speedBtn"></button>
+  </div>
+  <div class="row"><span id="speedLabel" class="hint"></span><button id="timeReset2" class="primary" data-i18n="resetTime"></button></div>
+</section>
+
+<section id="help" class="panel full" hidden>
+  <div class="panelhead"><h2 id="aboutLogo" class="logo"><img src="icon.svg" alt="" width="28" height="28"> <span data-i18n="appName"></span></h2><button class="close" data-close data-i18n-attr="aria-label:close">×</button></div>
+  <div class="prose" data-i18n-html="help.body"></div>
+</section>
+
+<div id="intro" class="intro">
+  <div class="introbox">
+    <h1 data-i18n="appName">Starfind</h1>
+    <p data-i18n="intro.lead"></p>
+    <button id="startSensor" class="primary big" data-i18n="intro.sensor"></button>
+    <button id="startManual" class="big" data-i18n="intro.manual"></button>
+    <p class="hint" data-i18n="intro.hint"></p>
+    <div id="loading" class="hint">…</div>
+  </div>
+</div>
+
+<script type="module" src="js/app.js"></script>
+</body>
+</html>
