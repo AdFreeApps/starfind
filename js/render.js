@@ -179,7 +179,7 @@ export class SkyRenderer {
     if (s.asterism) this.drawAsterism(s.asterism);
     if (L.stars) this.drawStars(s.cat.stars, L.starNames, s);
     if (L.planets) this.drawSolarSystem(s.bodies, s);
-    if (L.messier) this.drawMessier(s.cat.messier.concat(s.cat.extra));
+    if (L.messier) this.drawMessier(s.cat.messier.concat(s.cat.extra), s);
     if (L.showers) this.drawShowers(s.cat.showers, s.date, s.showerStatus);
     if (L.constellations) this.drawConstellationNames(s.cat.cons, s.highlightCon);
     if (L.horizon) this.drawGround();
@@ -470,6 +470,15 @@ export class SkyRenderer {
     return k * (X - 1);
   }
 
+  /** Can the naked eye find this deep-sky object under this sky? Spread-out light needs a darker sky than a star of
+   *  the same magnitude: +1 mag for clusters and nebulae, +1.5 for galaxies. Dark nebulae need the Milky Way behind them. */
+  nakedEyeDso(m, skyLim, lim, M) {
+    if (m.mag >= 50) return skyLim >= 5.5;
+    const spread = m.t === 's' || m.t === 'e' || m.t === 'i' ? 1.5 : 1;
+    const sinAlt = M[6] * m.v[0] + M[7] * m.v[1] + M[8] * m.v[2];
+    return m.mag + spread + this.extinction(sinAlt, skyLim) <= lim;
+  }
+
   starRef() { const f = this.fov; return f >= 100 ? 5.3 : f >= 70 ? 5.8 : f >= 45 ? 6.2 : 6.5; }
 
   drawStars(S, names, st) {
@@ -611,14 +620,17 @@ export class SkyRenderer {
   }
 
   // ------------------------------------------------------------------ deep sky
-  drawMessier(list) {
+  drawMessier(list, st = {}) {
     const ctx = this.ctx, p = [0, 0], fov = this.fov;
+    const sl = st.skyLim ?? 5.8, lim = sl + (this.starRef() - 5.8), M = this.M;
+    const sought = (m) => [st.target, st.selected].some((o) => o && (o.kind === 'messier' || o.kind === 'dso') && o.m === m);
     const showAll = fov <= 40;
     ctx.save();
     ctx.lineWidth = 1;
     for (const m of list) {
       const famous = !!m.ja || m.kind === 'dso';
       if (!showAll && !(famous && m.mag < (fov > 80 ? 5 : 7.5))) continue;
+      if (!sought(m) && !this.nakedEyeDso(m, sl, lim, M)) continue;
       if (!this.projEq(m.v, p) || !this.onScreen(p)) continue;
       const r = 4.5;
       ctx.strokeStyle = this.col([150, 222, 195], 0.7);
