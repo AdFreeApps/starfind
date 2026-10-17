@@ -461,6 +461,15 @@ export class SkyRenderer {
 
   // ------------------------------------------------------------------ stars
   /** Zoom-dependent reference magnitude: star size/brightness scale, and the zoom part of the drawing limit. */
+  /** Magnitudes lost to the atmosphere at this altitude (sin of altitude given). Brighter skies lose more:
+   *  haze and city light. k ≈ 0.25 mag per airmass at a dark site, ≈ 0.65 in a city centre. */
+  extinction(sinAlt, skyLim) {
+    const k = 0.25 + 0.1 * (6.5 - skyLim);
+    const h = Math.max(-1, Math.asin(Math.max(-1, Math.min(1, sinAlt))) * 180 / Math.PI);
+    const X = 1 / (Math.sin(h * Math.PI / 180) + 0.50572 * Math.pow(h + 6.07995, -1.6364)); // airmass, Kasten & Young 1989
+    return k * (X - 1);
+  }
+
   starRef() { const f = this.fov; return f >= 100 ? 5.3 : f >= 70 ? 5.8 : f >= 45 ? 6.2 : 6.5; }
 
   drawStars(S, names, st) {
@@ -468,7 +477,8 @@ export class SkyRenderer {
     // ref: zoom-dependent magnitude used for star size and brightness (unchanged by the sky setting)
     const ref = this.starRef();
     // lim: faintest star drawn — the sky setting at the default view, a little more when zoomed in, less when wide
-    const lim = (st.skyLim ?? 5.8) + (ref - 5.8);
+    const skyLim = st.skyLim ?? 5.8;
+    const lim = skyLim + (ref - 5.8);
     const zoom = Math.min(1.7, Math.max(0.8, Math.pow(60 / fov, 0.4)));
     const nameLim = fov >= 100 ? 0.9 : fov >= 70 ? 1.4 : fov >= 45 ? 2.1 : fov >= 30 ? 3.0 : 4.2;
     const sprites = this.night ? this.sprites.night : this.sprites.day;
@@ -485,6 +495,8 @@ export class SkyRenderer {
       const m = S.mag[i];
       if (m > lim) break; // sorted by magnitude
       const x = S.x[i], y = S.y[i], z = S.z[i];
+      const mEff = m + this.extinction(zx * x + zy * y + zz * z, skyLim); // dimmer near the horizon
+      if (mEff > lim) continue;
       const cz = C[6] * x + C[7] * y + C[8] * z;
       if (cz < zc) continue;
       const k = sc / (1 + cz);
@@ -497,7 +509,7 @@ export class SkyRenderer {
       let r = (0.55 + 0.5 * Math.pow(flux, 0.3)) * zoom;
       if (m < 1) r *= 1.12;
       let a = Math.min(1, 0.35 + 0.18 * (ref - m)) * vis;
-      a *= Math.min(1, 0.45 + 1.1 * (lim - m)); // fade in the last half magnitude
+      a *= Math.min(1, 0.45 + 1.1 * (lim - mEff)); // fade in the last half magnitude
       if (twinkle && m < 3) {
         const sAlt = zx * x + zy * y + zz * z;
         const amp = 0.06 + 0.22 * Math.max(0, 1 - sAlt * 2.5);
@@ -658,7 +670,11 @@ export class SkyRenderer {
       if (!st.layers.sunmoon && (b.key === 'sun' || b.key === 'moon')) continue;
       // planets follow the same naked-eye limit as stars, unless searched for or tapped
       const sought = [st.target, st.selected].some((o) => o && o.kind === 'body' && o.id === b.key);
-      if (b.key !== 'sun' && b.key !== 'moon' && !sought && b.mag > (st.skyLim ?? 5.8) + (this.starRef() - 5.8)) continue;
+      if (b.key !== 'sun' && b.key !== 'moon' && !sought) {
+        const sl = st.skyLim ?? 5.8, M = this.M;
+        const sinAlt = M[6] * b.v[0] + M[7] * b.v[1] + M[8] * b.v[2];
+        if (b.mag + this.extinction(sinAlt, sl) > sl + (this.starRef() - 5.8)) continue;
+      }
       if (!this.projEq(b.v, p) || !this.onScreen(p, 40)) continue;
       const rgb = PLANET_COLOR[b.key];
       let r;
