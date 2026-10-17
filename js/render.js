@@ -460,10 +460,13 @@ export class SkyRenderer {
   }
 
   // ------------------------------------------------------------------ stars
+  /** Zoom-dependent reference magnitude: star size/brightness scale, and the zoom part of the drawing limit. */
+  starRef() { const f = this.fov; return f >= 100 ? 5.3 : f >= 70 ? 5.8 : f >= 45 ? 6.2 : 6.5; }
+
   drawStars(S, names, st) {
     const ctx = this.ctx, C = this.C, zc = this.zCull, fov = this.fov, W = this.w, H = this.h;
     // ref: zoom-dependent magnitude used for star size and brightness (unchanged by the sky setting)
-    const ref = fov >= 100 ? 5.3 : fov >= 70 ? 5.8 : fov >= 45 ? 6.2 : 6.5;
+    const ref = this.starRef();
     // lim: faintest star drawn — the sky setting at the default view, a little more when zoomed in, less when wide
     const lim = (st.skyLim ?? 5.8) + (ref - 5.8);
     const zoom = Math.min(1.7, Math.max(0.8, Math.pow(60 / fov, 0.4)));
@@ -653,6 +656,9 @@ export class SkyRenderer {
     const pxPerRad = this.scale; // at the centre of a stereographic projection
     for (const b of bodies) {
       if (!st.layers.sunmoon && (b.key === 'sun' || b.key === 'moon')) continue;
+      // planets follow the same naked-eye limit as stars, unless searched for or tapped
+      const sought = [st.target, st.selected].some((o) => o && o.kind === 'body' && o.id === b.key);
+      if (b.key !== 'sun' && b.key !== 'moon' && !sought && b.mag > (st.skyLim ?? 5.8) + (this.starRef() - 5.8)) continue;
       if (!this.projEq(b.v, p) || !this.onScreen(p, 40)) continue;
       const rgb = PLANET_COLOR[b.key];
       let r;
