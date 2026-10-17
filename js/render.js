@@ -485,9 +485,9 @@ export class SkyRenderer {
     const ctx = this.ctx, C = this.C, zc = this.zCull, fov = this.fov, W = this.w, H = this.h;
     // ref: zoom-dependent magnitude used for star size and brightness (unchanged by the sky setting)
     const ref = this.starRef();
-    // lim: faintest star drawn — the sky setting at the default view, a little more when zoomed in, less when wide
+    // lim: faintest star drawn — what the naked eye reaches under this sky, at any zoom
     const skyLim = st.skyLim ?? 5.8;
-    const lim = skyLim + (ref - 5.8);
+    const lim = skyLim;
     const zoom = Math.min(1.7, Math.max(0.8, Math.pow(60 / fov, 0.4)));
     const nameLim = fov >= 100 ? 0.9 : fov >= 70 ? 1.4 : fov >= 45 ? 2.1 : fov >= 30 ? 3.0 : 4.2;
     const sprites = this.night ? this.sprites.night : this.sprites.day;
@@ -622,7 +622,7 @@ export class SkyRenderer {
   // ------------------------------------------------------------------ deep sky
   drawMessier(list, st = {}) {
     const ctx = this.ctx, p = [0, 0], fov = this.fov;
-    const sl = st.skyLim ?? 5.8, lim = sl + (this.starRef() - 5.8), M = this.M;
+    const sl = st.skyLim ?? 5.8, lim = sl, M = this.M;
     const sought = (m) => [st.target, st.selected].some((o) => o && (o.kind === 'messier' || o.kind === 'dso') && o.m === m);
     const showAll = fov <= 40;
     ctx.save();
@@ -685,7 +685,7 @@ export class SkyRenderer {
       if (b.key !== 'sun' && b.key !== 'moon' && !sought) {
         const sl = st.skyLim ?? 5.8, M = this.M;
         const sinAlt = M[6] * b.v[0] + M[7] * b.v[1] + M[8] * b.v[2];
-        if (b.mag + this.extinction(sinAlt, sl) > sl + (this.starRef() - 5.8)) continue;
+        if (b.mag + this.extinction(sinAlt, sl) > sl) continue;
       }
       if (!this.projEq(b.v, p) || !this.onScreen(p, 40)) continue;
       const rgb = PLANET_COLOR[b.key];

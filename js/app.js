@@ -30,7 +30,8 @@ const defaults = {
   layers: { stars: true, starNames: true, constellations: true, messier: true, planets: true, sunmoon: true, showers: true,
     milkyway: true, horizon: true, grid: false, eqlines: false, bounds: false },
   // skyLim: faintest magnitude the naked eye reaches under this sky (big city ≈ 3.5, dark site ≈ 6.5)
-  night: false, dim: false, twinkle: true, skyLim: 4.5, fov: CAP.likelyHandheld ? 70 : 90,
+  // handheld: 14° across the short side ≈ what the phone itself covers at arm's length, so the screen matches the sky behind it
+  night: false, dim: false, twinkle: true, skyLim: 4.5, fov: CAP.likelyHandheld ? 14 : 90, fovVer: 2,
   lat: DEFAULT_LOC.lat, lon: DEFAULT_LOC.lon, locKind: 'default',
   declination: -7.5, userOffset: 0, viewAz: 180, viewAlt: 35, lang: 'auto', mode: null,
 };
@@ -41,6 +42,8 @@ try {
     // migrate away from the removed kids mode
     if (saved.kids && saved.layersBeforeKids) saved.layers = saved.layersBeforeKids;
     delete saved.kids; delete saved.layersBeforeKids;
+    // 2026-10-17: the handheld default zoom changed from 70° to 14°; reset an older saved zoom once
+    if (saved.fovVer !== defaults.fovVer) { delete saved.fov; saved.fovVer = defaults.fovVer; }
     settings = { ...settings, ...saved, layers: { ...defaults.layers, ...(saved.layers || {}) } };
   }
 } catch (e) { /* storage unavailable */ }
@@ -605,7 +608,7 @@ window.addEventListener('keydown', (e) => {
   else return;
   if (e.key.startsWith('Arrow') && state.mode === 'sensor') setMode('manual');
 });
-function setFov(f) { settings.fov = Math.max(20, Math.min(120, f)); state.dirty = true; save(); }
+function setFov(f) { settings.fov = Math.max(8, Math.min(120, f)); state.dirty = true; save(); }
 
 function pickObject(x, y) {
   const p = renderer.pick(x, y, CAP.coarse ? 18 : 8);
