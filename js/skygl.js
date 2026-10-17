@@ -178,7 +178,7 @@ export class SkyGL {
     gl.uniform3fv(u.uSun, o.sun);
     gl.uniform1f(u.uSunAlt, o.sunAlt);
     gl.uniform1f(u.uNight, o.night ? 1 : 0);
-    gl.uniform1f(u.uMW, o.milkyway && this.texReady ? 1 : 0);
+    gl.uniform1f(u.uMW, o.milkyway && this.texReady ? (o.mwVis ?? 1) : 0);
     gl.uniform1f(u.uGround, o.ground ? 1 : 0);
     gl.uniform1f(u.uDetail, Math.max(0, Math.min(1, (60 - o.fov) / 40)));
     gl.uniform1i(u.uTex, 0);

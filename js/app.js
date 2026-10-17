@@ -29,7 +29,8 @@ document.body.classList.toggle('mouse', CAP.fine && CAP.hover);
 const defaults = {
   layers: { stars: true, starNames: true, constellations: true, messier: true, planets: true, sunmoon: true, showers: true,
     milkyway: true, horizon: true, grid: false, eqlines: false, bounds: false },
-  night: false, dim: false, twinkle: true, fov: CAP.likelyHandheld ? 70 : 90,
+  // skyLim: faintest magnitude the naked eye reaches under this sky (big city ≈ 3.5, dark site ≈ 6.5)
+  night: false, dim: false, twinkle: true, skyLim: 4.5, fov: CAP.likelyHandheld ? 70 : 90,
   lat: DEFAULT_LOC.lat, lon: DEFAULT_LOC.lon, locKind: 'default',
   declination: -7.5, userOffset: 0, viewAz: 180, viewAlt: 35, lang: 'auto', mode: null,
 };
@@ -66,6 +67,7 @@ if (num('alt') !== null) settings.viewAlt = num('alt');
 if (params.has('night')) settings.night = params.get('night') !== '0';
 if (params.has('lang')) settings.lang = params.get('lang');
 if (params.has('twinkle')) settings.twinkle = params.get('twinkle') !== '0';
+if (num('lim') !== null) settings.skyLim = num('lim');
 
 // ------------------------------------------------------------------ state
 const state = {
@@ -242,7 +244,7 @@ function draw(ms, now) {
   if (gl) {
     gl.render({
       C: renderer.C, scale: renderer.scale, zenith: A.mulMV(Mt, [0, 0, 1]), north: A.mulMV(Mt, [0, 1, 0]),
-      sun: sun ? sun.v : [1, 0, 0], sunAlt, night: settings.night, milkyway: settings.layers.milkyway,
+      sun: sun ? sun.v : [1, 0, 0], sunAlt, night: settings.night, milkyway: settings.layers.milkyway, mwVis: mwVis(),
       ground: settings.layers.horizon, fov: settings.fov,
     });
   }
@@ -252,7 +254,7 @@ function draw(ms, now) {
   renderer.render({
     cat: state.cat, layers: settings.layers, night: settings.night, bodies: state.bodies, sunAlt, names: rendererNames,
     highlightCon: tcon || (state.egg ? 'Cyg' : null), asterism: ast, egg: state.egg,
-    twinkle: settings.twinkle, labelTop: 64, labelBottom: 84,
+    twinkle: settings.twinkle, skyLim: settings.skyLim, mwVis: mwVis(), labelTop: 64, labelBottom: 84,
     albireoIdx: state.cat.stars.byHr.get(7417) ?? -1,
     target: tgt, selected: sel, time: now, date: new Date(ms), showerStatus,
   });
@@ -669,6 +671,9 @@ let wakeLock = null;
 async function requestWakeLock() { try { if ('wakeLock' in navigator) wakeLock = await navigator.wakeLock.request('screen'); } catch (e) { /* not allowed */ } }
 document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && wakeLock !== null) requestWakeLock(); });
 
+// the Milky Way fades out under bright skies (gone by mag 4, full at 6)
+function mwVis() { return Math.max(0, Math.min(1, (settings.skyLim - 4) / 2)); }
+
 // ------------------------------------------------------------------ toast / panels
 let toastTimer = 0;
 function toast(msg) {
@@ -700,6 +705,10 @@ function buildMenu() {
   bind('optNight', 'night', applyLook);
   bind('optDim', 'dim', applyLook);
   bind('optTwinkle', 'twinkle');
+  const sky = $('skySelect');
+  sky.value = String(settings.skyLim);
+  if (sky.value !== String(settings.skyLim)) sky.value = '4.5';
+  sky.onchange = () => { settings.skyLim = parseFloat(sky.value); save(); state.dirty = true; };
   const sel = $('langSelect');
   sel.innerHTML = `<option value="auto">${esc(t('lang.auto'))}</option>` + I.languages().map((l) => `<option value="${l.code}">${esc(l.name)}</option>`).join('');
   sel.value = settings.lang;

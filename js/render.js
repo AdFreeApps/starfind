@@ -166,7 +166,7 @@ export class SkyRenderer {
       const t = sa > -18 ? Math.min(1, (sa + 18) / 24) : 0;
       ctx.fillStyle = this.col([Math.round(7 + 14 * t), Math.round(12 + 31 * t), Math.round(31 + 51 * t)]);
       ctx.fillRect(0, 0, this.w, this.h);
-      if (L.milkyway) this.drawMilkyWayFallback(s.cat.mw, sa);
+      if (L.milkyway && (s.mwVis ?? 1) > 0) this.drawMilkyWayFallback(s.cat.mw, sa, s.mwVis ?? 1);
     }
     if (L.grid) this.drawAltAzGrid();
     if (L.eqlines) {
@@ -188,7 +188,7 @@ export class SkyRenderer {
   }
 
   // ------------------------------------------------------------------ fallback Milky Way (no WebGL)
-  drawMilkyWayFallback(mw, sunAlt) {
+  drawMilkyWayFallback(mw, sunAlt, vis = 1) {
     const g = this.mwCanvas.getContext('2d'), W = this.mwCanvas.width, H = this.mwCanvas.height;
     g.setTransform(1, 0, 0, 1, 0, 0);
     g.clearRect(0, 0, W, H);
@@ -197,7 +197,7 @@ export class SkyRenderer {
     const alphas = [0, 0.06, 0.08, 0.10, 0.13, 0.16];
     g.fillStyle = this.night ? '#ff0000' : '#c8d4ff';
     for (let lv = 1; lv <= 5; lv++) {
-      g.globalAlpha = alphas[lv];
+      g.globalAlpha = alphas[lv] * vis;
       g.beginPath();
       for (let i = 0; i < mw.n; i++) {
         if (mw.lv[i] !== lv) continue;
@@ -462,7 +462,10 @@ export class SkyRenderer {
   // ------------------------------------------------------------------ stars
   drawStars(S, names, st) {
     const ctx = this.ctx, C = this.C, zc = this.zCull, fov = this.fov, W = this.w, H = this.h;
-    const lim = fov >= 100 ? 5.3 : fov >= 70 ? 5.8 : fov >= 45 ? 6.2 : 6.5;
+    // ref: zoom-dependent magnitude used for star size and brightness (unchanged by the sky setting)
+    const ref = fov >= 100 ? 5.3 : fov >= 70 ? 5.8 : fov >= 45 ? 6.2 : 6.5;
+    // lim: faintest star drawn — the sky setting at the default view, a little more when zoomed in, less when wide
+    const lim = (st.skyLim ?? 5.8) + (ref - 5.8);
     const zoom = Math.min(1.7, Math.max(0.8, Math.pow(60 / fov, 0.4)));
     const nameLim = fov >= 100 ? 0.9 : fov >= 70 ? 1.4 : fov >= 45 ? 2.1 : fov >= 30 ? 3.0 : 4.2;
     const sprites = this.night ? this.sprites.night : this.sprites.day;
@@ -487,10 +490,11 @@ export class SkyRenderer {
       if (px < -30 || py < -30 || px > W + 30 || py > H + 30) continue;
       const b = bvBucket(S.bv[i]);
       // PSF size from flux: ~ (relative flux)^0.33, with a boost for the brightest
-      const flux = Math.pow(10, -0.4 * (m - lim));
+      const flux = Math.pow(10, -0.4 * (m - ref));
       let r = (0.55 + 0.5 * Math.pow(flux, 0.3)) * zoom;
       if (m < 1) r *= 1.12;
-      let a = Math.min(1, 0.35 + 0.18 * (lim - m)) * vis;
+      let a = Math.min(1, 0.35 + 0.18 * (ref - m)) * vis;
+      a *= Math.min(1, 0.45 + 1.1 * (lim - m)); // fade in the last half magnitude
       if (twinkle && m < 3) {
         const sAlt = zx * x + zy * y + zz * z;
         const amp = 0.06 + 0.22 * Math.max(0, 1 - sAlt * 2.5);
