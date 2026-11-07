@@ -80,7 +80,9 @@ const state = {
 };
 if (params.has('t')) setTime(new Date(params.get('t')).getTime(), 0, true);
 
-function simNow() { return state.simBase + (performance.now() - state.realBase) * state.rate; }
+// live mode reads the wall clock: on iOS, performance.now() stops while the app is in the background,
+// so "base + elapsed" would come back showing the time the app was last closed
+function simNow() { return state.live ? Date.now() : state.simBase + (performance.now() - state.realBase) * state.rate; }
 function setTime(ms, rate = 0, silent = false) {
   state.live = false; state.simBase = ms; state.realBase = performance.now(); state.rate = rate; state.dirty = true;
   state.bodiesAt = -Infinity; if (!silent) updateTimeUI();
@@ -89,6 +91,20 @@ function resetTime() {
   state.live = true; state.simBase = Date.now(); state.realBase = performance.now(); state.rate = 1; state.dirty = true;
   state.bodiesAt = -Infinity; updateTimeUI();
 }
+// coming back to the app: redraw at the real time; a time-travel setting older than 10 minutes goes back to "now"
+const RESUME_RESET_MS = 10 * 60 * 1000;
+let hiddenAt = 0;
+function onResume() {
+  if (!state.live && hiddenAt && Date.now() - hiddenAt > RESUME_RESET_MS) resetTime();
+  else { state.bodiesAt = -Infinity; state.dirty = true; updateTimeUI(); }
+  hiddenAt = 0;
+}
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'hidden') hiddenAt = Date.now(); else onResume();
+});
+window.addEventListener('pagehide', () => { if (!hiddenAt) hiddenAt = Date.now(); });
+window.addEventListener('pageshow', (e) => { if (e.persisted) onResume(); });
+
 const southern = () => settings.lat < 0;
 
 // ------------------------------------------------------------------ renderers
