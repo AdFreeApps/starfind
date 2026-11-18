@@ -1,0 +1,7 @@
+{
+  "_name": "繁體中文",
+  "_note": "Only object names are translated so far; other text falls back to English.",
+  "planet.sun": "太陽", "planet.moon": "月球", "planet.mercury": "水星", "planet.venus": "金星", "planet.mars": "火星",
+  "planet.jupiter": "木星", "planet.saturn": "土星", "planet.uranus": "天王星", "planet.neptune": "海王星",
+  "cardinal": ["北", "東北", "東", "東南", "南", "西南", "西", "西北"]
+}
